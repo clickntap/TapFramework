@@ -4,7 +4,7 @@ TapFramework is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'TapFramework'
+pod 'TapFramework', :git => 'https://github.com/clickntap/TapFramework'
 ```
 
 ## Author
