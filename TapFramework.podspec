@@ -6,10 +6,10 @@ Pod::Spec.new do |s|
     A Framework to build tappable iOS Apps.
     DESC
 
-  s.homepage         = 'https://github.com/Tonino Mendicino/TapFramework'
+  s.homepage         = 'https://github.com/github/TapFramework'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Tonino Mendicino' => 'tonino@clickntap.com' }
-  s.source           = { :git => 'https://github.com/Tonino Mendicino/TapFramework.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/github/TapFramework.git', :tag => s.version.to_s }
   s.ios.deployment_target = '9.0'
   s.source_files = 'TapFramework/Classes/**/*'
   s.resource_bundles = {
