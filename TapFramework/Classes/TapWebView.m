@@ -1,3 +1,4 @@
+#import "TapWebController.h"
 #import "TapWebView.h"
 #import "TapWebViewToolbar.h"
 #import "TapData.h"
@@ -35,6 +36,28 @@
     NSLog(@"DEALLOC %@", self.url);
 }
 
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    if(navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        NSString* url = [NSString stringWithFormat:@"%@", navigationAction.request.URL];
+        if([url hasSuffix:@".pdf"]) {
+            TapWebController* controller = [[TapWebController alloc] init];
+            NSMutableDictionary* item = [[NSMutableDictionary alloc] init];
+            [item setObject:navigationAction.request.URL forKey:@"url"];
+            [item setObject:@"web" forKey:@"type"];
+            [item setObject:@"pdf" forKey:@"extension"];
+            [item setObject:@"" forKey:@"title"];
+            controller.info = item;
+            [[Tap sharedInstance] push:controller animated:YES];
+            decisionHandler(WKNavigationActionPolicyCancel);
+        } else {
+            decisionHandler(WKNavigationActionPolicyAllow);
+        }
+        //
+    } else {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+}
+
 -(void)shareUrl:(NSNotification*)notification {
     TapWebViewToolbar* toolbar = notification.object;
     if([toolbar isKindOfClass:[TapWebViewToolbar class]]) {
@@ -50,7 +73,7 @@
     [super setupUi:size];
     web.frame = CGRectMake(0, 0, size.width, size.height);
     if(paddingEnabled) {
-        int hh = [[[TapSettings sharedInstance] number:TapSettingHeaderHeight] intValue];
+        //int hh = [[[TapSettings sharedInstance] number:TapSettingHeaderHeight] intValue];
         //int sh = [UIApplication sharedApplication].statusBarFrame.size.height;
         float safeAreaLeft = 0;
         float safeAreaRight = 0;
@@ -62,8 +85,9 @@
             safeAreaTop = [self superview].safeAreaInsets.top;
             safeAreaBottom = [self superview].safeAreaInsets.bottom;
         }
-        web.scrollView.contentInset = UIEdgeInsetsMake(hh,safeAreaRight,hh+safeAreaBottom,safeAreaLeft);
-   }
+        web.scrollView.contentInset = UIEdgeInsetsMake(0,0,0,0);
+        //web.scrollView.contentInset = UIEdgeInsetsMake(0,0,safeAreaBottom,0);
+    }
 }
 
 -(void)evaluateJavaScript:(NSString*)javascript {
@@ -92,14 +116,12 @@
     [UIView setAnimationDuration:0.5];
     webView.alpha = 1;
     [UIView commitAnimations];
-    if(paddingEnabled) {
-        [webView evaluateJavaScript:@"document.title" completionHandler:^(id result, NSError *error) {
-            if(!error) {
-                self.title = [NSString stringWithFormat:@"%@", result];
-            }
-            [[NSNotificationCenter defaultCenter] postNotificationName:TapWebViewReady object:self];
-        }];
-    }
+    [webView evaluateJavaScript:@"document.title" completionHandler:^(id result, NSError *error) {
+        if(!error) {
+            self.title = [NSString stringWithFormat:@"%@", result];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:TapWebViewReady object:self];
+    }];
     if([self.delegate respondsToSelector:@selector(onLoad:)]) {
         [self.delegate onLoad:self];
     }
