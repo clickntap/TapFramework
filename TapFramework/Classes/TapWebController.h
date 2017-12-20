@@ -6,7 +6,10 @@
     TapWebView* webView;
     TapWebViewToolbar* toolbar;
     BOOL webViewReady;
+    __weak id <TapWebViewDelegate> delegate;
 }
+
+@property (nonatomic, weak) id <TapWebViewDelegate> delegate;
 
 @end
 

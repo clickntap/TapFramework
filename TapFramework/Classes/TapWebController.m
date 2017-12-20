@@ -5,13 +5,16 @@
 
 @implementation TapWebController
 
+@synthesize delegate;
+
 -(void)loadUi {
     [super loadUi];
     [self waitOn];
     self.view.backgroundColor = [UIColor blackColor];
     webView = [[TapWebView alloc] initWithDictionary:info];
     [self.view addSubview:webView];
-    webView.paddingEnabled = YES;
+    //webView.paddingEnabled = YES;
+    webView.delegate = self.delegate;
     toolbar = [[TapWebViewToolbar alloc] init];
     [self.view addSubview:toolbar];
     toolbar.alpha = 0;
@@ -82,14 +85,21 @@
     }
     int hh = [[[TapSettings sharedInstance] number:TapSettingHeaderHeight] intValue];
     int sh = [UIApplication sharedApplication].statusBarFrame.size.height;
-    webView.frame = CGRectMake(0, 0, size.width, size.height);
-    toolbar.frame = CGRectMake(0, size.height-(hh+sh+safeAreaBottom), size.width, hh+sh+safeAreaBottom);
+    if(header.alpha == 0) {
+        hh = 0;
+        if(IS_IPHONEX) {
+            webView.layer.cornerRadius = 20;
+            webView.clipsToBounds = YES;
+        }
+    }
+    webView.frame = CGRectMake(0, sh+hh, size.width, size.height-sh-hh*2-safeAreaBottom);
+    toolbar.frame = CGRectMake(0, size.height-(hh+safeAreaBottom), size.width, hh+safeAreaBottom);
 }
 
 -(void)toggleUi {
     [super toggleUi];
     if(webViewReady) {
-        toolbar.alpha = header.alpha;
+       toolbar.alpha = header.alpha;
     }
 }
 

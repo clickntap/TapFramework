@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'TapFramework'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'A Framework to build tappable iOS Apps.'
   s.description      = <<-DESC
     A Framework to build tappable iOS Apps.
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Tonino Mendicino' => 'tonino@clickntap.com' }
   s.source           = { :git => 'https://github.com/clickntap/TapFramework.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '10.0'
   s.source_files = 'TapFramework/Classes/**/*'
   s.resource_bundles = {
     'TapFramework' => ['TapFramework/Assets/*.m4a','TapFramework/Assets/*.ttf']
