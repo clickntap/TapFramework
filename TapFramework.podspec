@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'TapFramework'
-  s.version          = '0.1.1'
+  s.version          = '1.2'
   s.summary          = 'A Framework to build tappable iOS Apps.'
   s.description      = <<-DESC
     A Framework to build tappable iOS Apps.

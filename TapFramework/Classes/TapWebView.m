@@ -6,11 +6,12 @@
 
 @implementation TapWebView
 
-@synthesize url, delegate, title, web, paddingEnabled;
+@synthesize url, delegate, title, web, paddingEnabled,bodyClass;
 
 - (id)init {
     if (self = [super init]) {
         paddingEnabled = NO;
+        closed = NO;
     }
     return self;
 }
@@ -66,7 +67,19 @@
 }
 
 -(void)close {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [webConfiguration.userContentController removeScriptMessageHandlerForName:@"app"];
+    closed = YES;
+}
+
+-(void)checkBody {
+    [self.web evaluateJavaScript:@"document.body.className" completionHandler:^(id result, NSError *error) {
+        self.bodyClass = result;
+      [[NSNotificationCenter defaultCenter] postNotificationName:@"BodyCheck" object:self userInfo:nil];
+    }];
+    if(!closed) {
+        [self performSelector:@selector(checkBody) withObject:nil afterDelay:5];
+    }
 }
 
 -(void)setupUi:(CGSize)size {
@@ -125,6 +138,7 @@
     if([self.delegate respondsToSelector:@selector(onLoad:)]) {
         [self.delegate onLoad:self];
     }
+    [self performSelector:@selector(checkBody) withObject:nil afterDelay:5];
     [[NSNotificationCenter defaultCenter] postNotificationName:TapWebViewDidFinishNavigation object:self];
 }
 
