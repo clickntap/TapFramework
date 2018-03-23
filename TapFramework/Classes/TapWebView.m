@@ -41,19 +41,11 @@
     if(navigationAction.navigationType == WKNavigationTypeLinkActivated) {
         NSString* url = [NSString stringWithFormat:@"%@", navigationAction.request.URL];
         if([url hasSuffix:@".pdf"]) {
-            TapWebController* controller = [[TapWebController alloc] init];
-            NSMutableDictionary* item = [[NSMutableDictionary alloc] init];
-            [item setObject:navigationAction.request.URL forKey:@"url"];
-            [item setObject:@"web" forKey:@"type"];
-            [item setObject:@"pdf" forKey:@"extension"];
-            [item setObject:@"" forKey:@"title"];
-            controller.info = item;
-            [[Tap sharedInstance] push:controller animated:YES];
+              [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:NULL];
             decisionHandler(WKNavigationActionPolicyCancel);
         } else {
             decisionHandler(WKNavigationActionPolicyAllow);
         }
-        //
     } else {
         decisionHandler(WKNavigationActionPolicyAllow);
     }
